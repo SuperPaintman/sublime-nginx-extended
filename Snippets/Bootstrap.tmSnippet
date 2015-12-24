@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>content</key>
+    <string>upstream ${1:backend} {
+    server 127.0.0.1:${2:8080};
+}
+ 
+server {
+    listen       80;
+    server_name  ${3:test.com} *.${3:test.com};
+
+    access_log   /var/nginx.acc.${3:test.com}.log;
+    error_log    /var/nginx.err.${3:test.com}.log;
+ 
+    # Static
+    location /public { 
+        expires 30d;
+        root ${4:/apps}/${3:test.com}/;
+    }
+ 
+    # Proxy
+    location / {
+        proxy_pass http://${1:backend};
+    }
+}
+$0</string>
+    <key>name</key>
+    <string>Bootstrap</string>
+    <key>scope</key>
+    <string>source.nginx</string>
+    <key>tabTrigger</key>
+    <string>bootstrap</string>
+</dict>
+</plist>

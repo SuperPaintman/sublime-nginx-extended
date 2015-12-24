@@ -316,7 +316,7 @@ repository:
           \b(
             gzip|gzip_buffers|gzip_comp_level|gzip_disable|
             gzip_http_version|gzip_min_length|gzip_proxied|
-            gzip_types|gzip_vary
+            gzip_types|gzip_vary|gzip_length
           )\b
           
       captures:

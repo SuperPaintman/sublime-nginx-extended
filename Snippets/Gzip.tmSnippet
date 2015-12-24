@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>content</key>
+    <string># GZIP
+gzip      ${1:on};
+gzip_vary ${2:on};
+
+gzip_disable "MSIE [4-6]\.";
+gzip_types text/plain 
+           text/css 
+           application/json 
+           application/x-javascript 
+           text/xml 
+           application/xml 
+           application/xml+rss 
+           text/javascript 
+           application/javascript;
+${3:#} gzip_buffers 16 8k;
+${3:#} gzip_length 20;
+${3:#} gzip_http_version 1.1;
+${3:#} gzip_proxied off;
+${3:#} gzip_comp_level 1;
+$0</string>
+    <key>name</key>
+    <string>Gzip</string>
+    <key>scope</key>
+    <string>source.nginx</string>
+    <key>tabTrigger</key>
+    <string>gzip</string>
+</dict>
+</plist>
