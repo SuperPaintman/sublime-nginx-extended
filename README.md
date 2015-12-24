@@ -1,8 +1,12 @@
 # Nginx Extended
 **Nginx** bundle for **Sublime Text 2/3**. It is based on [brandonwamboldt/sublime-nginx](https://github.com/brandonwamboldt/sublime-nginx), because it broken eg `directive + new line`.
 
+--------------------------------------------------------------------------------
+
 ## Highlighting
 ![screenshot](/Readme/example.png)
+
+--------------------------------------------------------------------------------
 
 ## Snippets
 ### Snippet Triggers
@@ -80,9 +84,9 @@ add_header X-Forwarded-For  $proxy_add_x_forwarded_for;
 server 127.0.0.1:8080 weight=1 fail_timeout=5s max_fails=1 slow_start=5s backup;
 ```
 
-***
+--------------------------------------------------------------------------------
 
-## Authors
+## Author
 
 **Alexander Krivoshhekov**
 
