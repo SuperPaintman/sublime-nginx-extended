@@ -62,7 +62,7 @@ repository:
         '1':
           name: storage.type.context.location.nginx
         '2':
-          name: string.other.path.nginx
+          name: string.regexp.nginx
       # name: storage.type.context.nginx
 
       patterns:
@@ -85,7 +85,7 @@ repository:
           name: storage.type.context.location.nginx
         '2':
           # name: entity.name.context.location.nginx
-          name: string.regexp.nginx
+          name: string.other.path.nginx
       # name: storage.type.context.nginx
 
     # Single {}

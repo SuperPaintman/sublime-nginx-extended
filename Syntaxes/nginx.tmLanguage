@@ -180,7 +180,7 @@
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>string.other.path.nginx</string>
+							<string>string.regexp.nginx</string>
 						</dict>
 					</dict>
 					<key>end</key>
@@ -213,7 +213,7 @@
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>string.regexp.nginx</string>
+							<string>string.other.path.nginx</string>
 						</dict>
 					</dict>
 					<key>end</key>
