@@ -23,10 +23,16 @@ patterns:
 
 - include: '#context'
 
-# - include: '#keyword'
-- include: '#keyword_boolean'
+- include: '#keyword'
+- include: '#keyword_logic'
 
-## rewrite <<<<<<<<<<<<
+- include: '#values_ipaddress'
+- include: '#values_regexp'
+- include: '#values_string'
+
+- include: '#constant'
+
+- include: '#variables'
 
 repository:
   comment: 
@@ -49,14 +55,14 @@ repository:
             location
           )\b
           \s*
-          (~|~\*|\^~)
+          (=|~|~\*|\^~)\s
       end: (?=\{)
 
       beginCaptures:
         '1':
           name: storage.type.context.location.nginx
         '2':
-          name: string.regexp.nginx
+          name: string.other.path.nginx
       # name: storage.type.context.nginx
 
       patterns:
@@ -71,18 +77,15 @@ repository:
             location|upstream
           )\b
           \s*
-          (=)?
-          \s*
-          (.+)
+          ([\w\d\@\:\%\.\_\+\~\#\=\\\/]+)
       end: (?=\{)
 
       beginCaptures:
         '1':
           name: storage.type.context.location.nginx
         '2':
-          name: keyword.operator.nginx
-        '3':
-          name: entity.name.context.location.nginx
+          # name: entity.name.context.location.nginx
+          name: string.regexp.nginx
       # name: storage.type.context.nginx
 
     # Single {}
@@ -93,6 +96,8 @@ repository:
           \b(
             events|http|types|server|location|upstream
           )\b
+          \s+
+          (?![\w\d]+)
       end: (?=\{)
 
       beginCaptures:
@@ -163,7 +168,9 @@ repository:
             server_names_hash_max_size|server_names_hash_bucket_size|
             server_tokens|tcp_nodelay|tcp_nopush|try_files|types|
             underscores_in_hashes|variables_hash_bucket_size|
-            variables_hash_max_size|types_hash_max_size
+            variables_hash_max_size|types_hash_max_size|
+            output_buffers|postpone_output|send_lowat|
+            connections
           )\b
 
       captures:
@@ -514,7 +521,7 @@ repository:
           (?:^|\{|\}|;)
           \s*
           \b(
-            rewrite_log|set|uninitialized_variable_warn
+            rewrite|rewrite_log|set|uninitialized_variable_warn
           )\b
           
       captures:
@@ -596,7 +603,7 @@ repository:
           (?:^|\{|\}|;)
           \s*
           \b(
-            ip_hash|server|
+            ip_hash|server
           )\b
           
       captures:
@@ -656,124 +663,7 @@ repository:
         '1':
           name: keyword.directive.module.http.stub_status.nginx
 
-    # module http rewrite
-    - match: >-
-        (?x)
-          (?:^|\{|\}|;)
-          \s*
-          \b(
-            break|return
-          )\b
-          
-      captures:
-        '1':
-          name: keyword.directive.module.http.rewrite.nginx
-
-    # module http rewrite
-    - match: >-
-        (?x)
-          (?:^|\{|\}|;)
-          \s*
-          \b(
-            break|return
-          )\b
-          
-      captures:
-        '1':
-          name: keyword.directive.module.http.rewrite.nginx
-
-    # module http rewrite
-    - match: >-
-        (?x)
-          (?:^|\{|\}|;)
-          \s*
-          \b(
-            break|return
-          )\b
-          
-      captures:
-        '1':
-          name: keyword.directive.module.http.rewrite.nginx
-
-    # module http rewrite
-    - match: >-
-        (?x)
-          (?:^|\{|\}|;)
-          \s*
-          \b(
-            break|return
-          )\b
-          
-      captures:
-        '1':
-          name: keyword.directive.module.http.rewrite.nginx
-
-    # module http rewrite
-    - match: >-
-        (?x)
-          (?:^|\{|\}|;)
-          \s*
-          \b(
-            break|return
-          )\b
-          
-      captures:
-        '1':
-          name: keyword.directive.module.http.rewrite.nginx
-
-    # module http rewrite
-    - match: >-
-        (?x)
-          (?:^|\{|\}|;)
-          \s*
-          \b(
-            break|return
-          )\b
-          
-      captures:
-        '1':
-          name: keyword.directive.module.http.rewrite.nginx
-
-    # module http rewrite
-    - match: >-
-        (?x)
-          (?:^|\{|\}|;)
-          \s*
-          \b(
-            break|return
-          )\b
-          
-      captures:
-        '1':
-          name: keyword.directive.module.http.rewrite.nginx
-
-    # module http rewrite
-    - match: >-
-        (?x)
-          (?:^|\{|\}|;)
-          \s*
-          \b(
-            break|return
-          )\b
-          
-      captures:
-        '1':
-          name: keyword.directive.module.http.rewrite.nginx
-
-    # module http rewrite
-    - match: >-
-        (?x)
-          (?:^|\{|\}|;)
-          \s*
-          \b(
-            break|return
-          )\b
-          
-      captures:
-        '1':
-          name: keyword.directive.module.http.rewrite.nginx
-
-  keyword_boolean:
+  keyword_logic:
     patterns:
     # Boolean
     - begin: \b(if)\s+(\()
@@ -785,3 +675,144 @@ repository:
 
       patterns:
       - include: $self
+
+  constant:
+    patterns:
+    # Variables
+    - match: >-
+        (?x)
+          (
+            \$
+            (
+              ancient_browser|arg_|args|binary_remote_addr|
+              body_bytes_sent|bytes_sent|bytes_sent|
+              connection|connection|connection_requests|
+              connection_requests|connections_active|connections_reading|
+              connections_waiting|connections_writing|content_length|
+              content_type|cookie_|date_gmt|date_local|document_root|
+              document_uri|fastcgi_path_info|fastcgi_script_name|
+              geoip_area_code|geoip_city|geoip_city_continent_code|
+              geoip_city_country_code|geoip_city_country_code3|
+              geoip_city_country_name|geoip_country_code|
+              geoip_country_code3|geoip_country_name|geoip_dma_code|
+              geoip_latitude|geoip_longitude|geoip_org|
+              geoip_postal_code|geoip_region|geoip_region_name|
+              gzip_ratio|host|hostname|http2|http_|https|invalid_referer|
+              is_args|limit_rate|memcached_key|modern_browser|msec|
+              msec|msie|nginx_version|pid|pipe|pipe|proxy_add_x_forwarded_for|
+              proxy_host|proxy_port|proxy_protocol_addr|query_string|
+              realip_remote_addr|realpath_root|remote_addr|remote_port|
+              remote_user|request|request_body|request_body_file|
+              request_completion|request_filename|request_length|
+              request_length|request_method|request_time|request_time|
+              request_uri|scheme|secure_link|secure_link_expires|
+              sent_http_|server_addr|server_name|server_port|server_protocol|
+              session_log_binary_id|session_log_id|slice_range|
+              spdy|spdy_request_priority|ssl_cipher|ssl_client_cert|
+              ssl_client_fingerprint|ssl_client_i_dn|ssl_client_raw_cert|
+              ssl_client_s_dn|ssl_client_serial|ssl_client_verify|
+              ssl_protocol|ssl_server_name|ssl_session_id|ssl_session_reused|
+              status|status|tcpinfo_rtt|tcpinfo_rttvar|tcpinfo_snd_cwnd|
+              tcpinfo_rcv_space|time_iso8601|time_iso8601|time_local|
+              time_local|uid_got|uid_reset|uid_set|upstream_addr|
+              upstream_cache_status|upstream_connect_time|upstream_cookie_|
+              upstream_header_time|upstream_http_|upstream_response_length|
+              upstream_response_time|upstream_status|uri
+            )
+          )\b
+    
+      name: support.constant.variable.nginx
+
+    # Numeric
+    - match: >-
+        (?x)
+          (?<!\/|\.)
+          \b([0-9][0-9\.]*[bBkKmMgGtTsShHdD]?)\b
+      name: constant.numeric.nginx
+
+    # Boolean
+    - match: >-
+        (?x)
+          (?<!\/|\.)
+          \b(
+            on|off|true|false
+          )\b
+
+      name: constant.language.nginx
+
+    - match: >-
+        (?x)
+          (?<!\/|\.)
+          \b(
+            kqueue|rtsig|epoll|\/dev\/poll|
+            select|poll|eventport|max|
+            all|default_server|default|
+            main|crit|error|debug|warn|
+            notice|last
+          )\b
+
+      name: constant.language.nginx
+
+  values_ipaddress:
+    patterns:
+    # v4
+    - match: >-
+        (?x)
+          (?<!\/|\.)
+          \b(
+            (
+              ([0-9]{1,3})
+              \.
+              ([0-9]{1,3})
+              \.
+              ([0-9]{1,3})
+              \.
+              ([0-9]{1,3})
+            )
+            (:[0-9]{1,5})?
+          )\b
+      captures:
+        '1':
+          name: string.other.ipaddress.v4.nginx
+
+    # v6
+    - match: >-
+        (?x)
+          (?<!\/|\.)
+          \b(
+            ([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])
+          )\b
+      captures:
+        '1':
+          name: string.other.ipaddress.v6.nginx
+
+  values_regexp:
+    patterns:
+    - begin: (=|~|~\*|\^~|\^)\s
+      end: (\ |\$|;$)
+
+      beginCaptures:
+        '1':
+          name: string.regexp.nginx
+
+      name: string.regexp.nginx
+
+      patterns:
+      - include: 'source.regexp'
+
+  values_string: 
+    patterns:
+    - begin: (\")
+      end: (\")
+
+      name: string.quoted.double.nginx
+
+    - begin: (\')
+      end: (\')
+
+      name: string.quoted.single.nginx
+
+  variables:
+    patterns:
+    - match: (\$[A-Za-z0-9\_]+)\b
+      name: variable.other.nginx

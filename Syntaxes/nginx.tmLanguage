@@ -24,7 +24,31 @@
 		</dict>
 		<dict>
 			<key>include</key>
-			<string>#keyword_boolean</string>
+			<string>#keyword</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#keyword_logic</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#values_ipaddress</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#values_regexp</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#values_string</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#constant</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#variables</string>
 		</dict>
 	</array>
 	<key>repository</key>
@@ -49,6 +73,89 @@
 				</dict>
 			</array>
 		</dict>
+		<key>constant</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>(?x)
+  (
+    \$
+    (
+      ancient_browser|arg_|args|binary_remote_addr|
+      body_bytes_sent|bytes_sent|bytes_sent|
+      connection|connection|connection_requests|
+      connection_requests|connections_active|connections_reading|
+      connections_waiting|connections_writing|content_length|
+      content_type|cookie_|date_gmt|date_local|document_root|
+      document_uri|fastcgi_path_info|fastcgi_script_name|
+      geoip_area_code|geoip_city|geoip_city_continent_code|
+      geoip_city_country_code|geoip_city_country_code3|
+      geoip_city_country_name|geoip_country_code|
+      geoip_country_code3|geoip_country_name|geoip_dma_code|
+      geoip_latitude|geoip_longitude|geoip_org|
+      geoip_postal_code|geoip_region|geoip_region_name|
+      gzip_ratio|host|hostname|http2|http_|https|invalid_referer|
+      is_args|limit_rate|memcached_key|modern_browser|msec|
+      msec|msie|nginx_version|pid|pipe|pipe|proxy_add_x_forwarded_for|
+      proxy_host|proxy_port|proxy_protocol_addr|query_string|
+      realip_remote_addr|realpath_root|remote_addr|remote_port|
+      remote_user|request|request_body|request_body_file|
+      request_completion|request_filename|request_length|
+      request_length|request_method|request_time|request_time|
+      request_uri|scheme|secure_link|secure_link_expires|
+      sent_http_|server_addr|server_name|server_port|server_protocol|
+      session_log_binary_id|session_log_id|slice_range|
+      spdy|spdy_request_priority|ssl_cipher|ssl_client_cert|
+      ssl_client_fingerprint|ssl_client_i_dn|ssl_client_raw_cert|
+      ssl_client_s_dn|ssl_client_serial|ssl_client_verify|
+      ssl_protocol|ssl_server_name|ssl_session_id|ssl_session_reused|
+      status|status|tcpinfo_rtt|tcpinfo_rttvar|tcpinfo_snd_cwnd|
+      tcpinfo_rcv_space|time_iso8601|time_iso8601|time_local|
+      time_local|uid_got|uid_reset|uid_set|upstream_addr|
+      upstream_cache_status|upstream_connect_time|upstream_cookie_|
+      upstream_header_time|upstream_http_|upstream_response_length|
+      upstream_response_time|upstream_status|uri
+    )
+  )\b</string>
+					<key>name</key>
+					<string>support.constant.variable.nginx</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>(?x)
+  (?&lt;!\/|\.)
+  \b([0-9][0-9\.]*[bBkKmMgGtTsShHdD]?)\b</string>
+					<key>name</key>
+					<string>constant.numeric.nginx</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>(?x)
+  (?&lt;!\/|\.)
+  \b(
+    on|off|true|false
+  )\b</string>
+					<key>name</key>
+					<string>constant.language.nginx</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>(?x)
+  (?&lt;!\/|\.)
+  \b(
+    kqueue|rtsig|epoll|\/dev\/poll|
+    select|poll|eventport|max|
+    all|default_server|default|
+    main|crit|error|debug|warn|
+    notice|last
+  )\b</string>
+					<key>name</key>
+					<string>constant.language.nginx</string>
+				</dict>
+			</array>
+		</dict>
 		<key>context</key>
 		<dict>
 			<key>patterns</key>
@@ -62,7 +169,7 @@
     location
   )\b
   \s*
-  (~|~\*|\^~)</string>
+  (=|~|~\*|\^~)\s</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -73,7 +180,7 @@
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>string.regexp.nginx</string>
+							<string>string.other.path.nginx</string>
 						</dict>
 					</dict>
 					<key>end</key>
@@ -95,9 +202,7 @@
     location|upstream
   )\b
   \s*
-  (=)?
-  \s*
-  (.+)</string>
+  ([\w\d\@\:\%\.\_\+\~\#\=\\\/]+)</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -108,12 +213,7 @@
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator.nginx</string>
-						</dict>
-						<key>3</key>
-						<dict>
-							<key>name</key>
-							<string>entity.name.context.location.nginx</string>
+							<string>string.regexp.nginx</string>
 						</dict>
 					</dict>
 					<key>end</key>
@@ -126,7 +226,9 @@
   \s*
   \b(
     events|http|types|server|location|upstream
-  )\b</string>
+  )\b
+  \s+
+  (?![\w\d]+)</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -223,7 +325,9 @@
     server_names_hash_max_size|server_names_hash_bucket_size|
     server_tokens|tcp_nodelay|tcp_nopush|try_files|types|
     underscores_in_hashes|variables_hash_bucket_size|
-    variables_hash_max_size|types_hash_max_size
+    variables_hash_max_size|types_hash_max_size|
+    output_buffers|postpone_output|send_lowat|
+    connections
   )\b</string>
 				</dict>
 				<dict>
@@ -692,7 +796,7 @@
   (?:^|\{|\}|;)
   \s*
   \b(
-    rewrite_log|set|uninitialized_variable_warn
+    rewrite|rewrite_log|set|uninitialized_variable_warn
   )\b
   </string>
 				</dict>
@@ -799,7 +903,7 @@
   (?:^|\{|\}|;)
   \s*
   \b(
-    ip_hash|server|
+    ip_hash|server
   )\b
   </string>
 				</dict>
@@ -871,171 +975,9 @@
   )\b
   </string>
 				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.directive.module.http.rewrite.nginx</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>(?x)
-  (?:^|\{|\}|;)
-  \s*
-  \b(
-    break|return
-  )\b
-  </string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.directive.module.http.rewrite.nginx</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>(?x)
-  (?:^|\{|\}|;)
-  \s*
-  \b(
-    break|return
-  )\b
-  </string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.directive.module.http.rewrite.nginx</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>(?x)
-  (?:^|\{|\}|;)
-  \s*
-  \b(
-    break|return
-  )\b
-  </string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.directive.module.http.rewrite.nginx</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>(?x)
-  (?:^|\{|\}|;)
-  \s*
-  \b(
-    break|return
-  )\b
-  </string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.directive.module.http.rewrite.nginx</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>(?x)
-  (?:^|\{|\}|;)
-  \s*
-  \b(
-    break|return
-  )\b
-  </string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.directive.module.http.rewrite.nginx</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>(?x)
-  (?:^|\{|\}|;)
-  \s*
-  \b(
-    break|return
-  )\b
-  </string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.directive.module.http.rewrite.nginx</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>(?x)
-  (?:^|\{|\}|;)
-  \s*
-  \b(
-    break|return
-  )\b
-  </string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.directive.module.http.rewrite.nginx</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>(?x)
-  (?:^|\{|\}|;)
-  \s*
-  \b(
-    break|return
-  )\b
-  </string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.directive.module.http.rewrite.nginx</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>(?x)
-  (?:^|\{|\}|;)
-  \s*
-  \b(
-    break|return
-  )\b
-  </string>
-				</dict>
 			</array>
 		</dict>
-		<key>keyword_boolean</key>
+		<key>keyword_logic</key>
 		<dict>
 			<key>patterns</key>
 			<array>
@@ -1059,6 +1001,116 @@
 							<string>$self</string>
 						</dict>
 					</array>
+				</dict>
+			</array>
+		</dict>
+		<key>values_ipaddress</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>string.other.ipaddress.v4.nginx</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>(?x)
+  (?&lt;!\/|\.)
+  \b(
+    (
+      ([0-9]{1,3})
+      \.
+      ([0-9]{1,3})
+      \.
+      ([0-9]{1,3})
+      \.
+      ([0-9]{1,3})
+    )
+    (:[0-9]{1,5})?
+  )\b</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>string.other.ipaddress.v6.nginx</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>(?x)
+  (?&lt;!\/|\.)
+  \b(
+    ([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])
+  )\b</string>
+				</dict>
+			</array>
+		</dict>
+		<key>values_regexp</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>begin</key>
+					<string>(=|~|~\*|\^~|\^)\s</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>string.regexp.nginx</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>(\ |\$|;$)</string>
+					<key>name</key>
+					<string>string.regexp.nginx</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>source.regexp</string>
+						</dict>
+					</array>
+				</dict>
+			</array>
+		</dict>
+		<key>values_string</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>begin</key>
+					<string>(\")</string>
+					<key>end</key>
+					<string>(\")</string>
+					<key>name</key>
+					<string>string.quoted.double.nginx</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(\')</string>
+					<key>end</key>
+					<string>(\')</string>
+					<key>name</key>
+					<string>string.quoted.single.nginx</string>
+				</dict>
+			</array>
+		</dict>
+		<key>variables</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>(\$[A-Za-z0-9\_]+)\b</string>
+					<key>name</key>
+					<string>variable.other.nginx</string>
 				</dict>
 			</array>
 		</dict>
