@@ -77,7 +77,7 @@ repository:
             location|upstream
           )\b
           \s*
-          ([\w\d\@\:\%\.\_\+\~\#\=\\\/]+)
+          ([\w\d\@\:\%\.\_\-\+\~\#\=\\\/]+)
       end: (?=\{)
 
       beginCaptures:
